@@ -37,8 +37,12 @@ export const copy = {
   heading: 'Championship Day',
   event: "Alpine skiing — women's slalom",
   date: '12 February',
+  courseTitle: 'Alpine skiing',
+  courseDetails: 'Course: 58 gates, 180 m vertical drop',
   manageAlerts: 'Manage alerts',
+  addToFavourites: 'Add to favourites',
   linkCopied: 'Link copied',
+  copyLink: 'Copy link',
   medals: 'Medal ceremonies are published after the final heat.',
   details: 'Details',
   alertTitle: 'Alert preferences',
@@ -51,6 +55,12 @@ export const copy = {
   noc: 'NOC',
   status: 'Status',
   statusMark: '—',
+  views: 'Views',
+  filterSessions: 'Filter sessions',
+  athlete: 'Athlete',
+  standing: { Qualified: 'Qualified', Eliminated: 'Eliminated' },
+  sortByRank: 'Sort by rank',
+  sortByBib: 'Sort by bib',
 } as const;
 
 export const views: readonly ViewOption[] = [

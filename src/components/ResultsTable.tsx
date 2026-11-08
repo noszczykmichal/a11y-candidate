@@ -1,6 +1,6 @@
 import { css, cx } from 'styled-system/css';
 import { Box } from 'styled-system/jsx';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 import { type AthleteResult, copy, results } from '../data/fixtures';
 
@@ -86,6 +86,7 @@ export function ResultsTable() {
     rank: 'asc',
     bib: 'asc',
   });
+  const captionId = useId();
 
   const handleSort = (nextColumn: SortColumn) => {
     setDirections((current) => ({
@@ -97,59 +98,69 @@ export function ResultsTable() {
 
   const sortedRows = sortResults(results, column, directions[column]);
 
+  const ariaSort = (c: SortColumn) =>
+    column === c
+      ? directions[c] === 'asc'
+        ? 'ascending'
+        : 'descending'
+      : undefined;
+
   return (
-    <Box>
-      <Box overflowX="auto">
-        <table className={tableClass}>
-          <caption className={captionClass}>{copy.resultsCaption}</caption>
-          <thead>
-            <tr>
-              <th className={headerCellClass}>
-                <button
-                  type="button"
-                  aria-label="Sort by rank"
-                  className={sortButtonClass}
-                  onClick={() => handleSort('rank')}
-                >
-                  {copy.rank}
-                </button>
-              </th>
-              <th className={headerCellClass}>
-                <button
-                  type="button"
-                  aria-label="Sort by rank"
-                  className={sortButtonClass}
-                  onClick={() => handleSort('bib')}
-                >
-                  {copy.bib}
-                </button>
-              </th>
-              <th className={headerCellClass} />
-              <th className={headerCellClass}>{copy.noc}</th>
-              <th className={headerCellClass}>{copy.status}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedRows.map((row) => (
-              <tr key={row.bib}>
-                <td className={bodyCellClass}>{row.rank}</td>
-                <td className={bodyCellClass}>{row.bib}</td>
-                <td className={bodyCellClass}>{row.athlete}</td>
-                <td className={bodyCellClass}>{row.noc}</td>
-                <td className={cx(bodyCellClass, standingClass[row.standing])}>
-                  {copy.statusMark}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Box>
-      <table className={css({ srOnly: true })}>
-        <caption>{copy.resultsCaption}</caption>
-        <tbody>
+    <Box
+      overflowX="auto"
+      tabIndex={0}
+      role="region"
+      aria-labelledby={captionId}
+      _focusVisible={{
+        outlineColor: 'focus.default',
+        outlineOffset: '0.125rem',
+        outlineStyle: 'solid',
+        outlineWidth: '0.125rem',
+      }}
+    >
+      <table className={tableClass}>
+        <caption id={captionId} className={captionClass}>
+          {copy.resultsCaption}
+        </caption>
+        <thead>
           <tr>
-            <td>{copy.statusMark}</td>
+            <th className={headerCellClass} aria-sort={ariaSort('rank')}>
+              <button
+                type="button"
+                aria-label={copy.sortByRank}
+                className={sortButtonClass}
+                onClick={() => handleSort('rank')}
+              >
+                {copy.rank}
+              </button>
+            </th>
+            <th className={headerCellClass} aria-sort={ariaSort('bib')}>
+              <button
+                type="button"
+                aria-label={copy.sortByBib}
+                className={sortButtonClass}
+                onClick={() => handleSort('bib')}
+              >
+                {copy.bib}
+              </button>
+            </th>
+            <th className={headerCellClass}>{copy.athlete}</th>
+            <th className={headerCellClass}>{copy.noc}</th>
+            <th className={headerCellClass}>{copy.status}</th>
           </tr>
+        </thead>
+        <tbody>
+          {sortedRows.map((row) => (
+            <tr key={row.bib}>
+              <td className={bodyCellClass}>{row.rank}</td>
+              <td className={bodyCellClass}>{row.bib}</td>
+              <td className={bodyCellClass}>{row.athlete}</td>
+              <td className={bodyCellClass}>{row.noc}</td>
+              <td className={cx(bodyCellClass, standingClass[row.standing])}>
+                {copy.standing[row.standing]}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </Box>

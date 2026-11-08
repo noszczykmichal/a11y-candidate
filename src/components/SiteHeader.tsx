@@ -1,8 +1,7 @@
+import { useEffect, useState } from 'react';
 import { css } from 'styled-system/css';
 import { Flex, Stack } from 'styled-system/jsx';
-import { useState } from 'react';
 
-import alpineSkiing from '../assets/alpine-skiing.svg';
 import { copy } from '../data/fixtures';
 
 const focusRing = {
@@ -50,9 +49,22 @@ export interface SiteHeaderProps {
   onManageAlerts: () => void;
 }
 
+export const STATUS_TIMEOUT_MS = 5000;
+
 export function SiteHeader({ onManageAlerts }: SiteHeaderProps) {
   const [isStarFilled, setIsStarFilled] = useState(false);
   const [hasCopiedLink, setHasCopiedLink] = useState(false);
+
+  useEffect(() => {
+    if (!hasCopiedLink) return;
+
+    const timeout = setTimeout(
+      () => setHasCopiedLink(false),
+      STATUS_TIMEOUT_MS,
+    );
+
+    return () => clearTimeout(timeout);
+  }, [hasCopiedLink]);
 
   return (
     <header>
@@ -63,16 +75,22 @@ export function SiteHeader({ onManageAlerts }: SiteHeaderProps) {
         gap="4"
       >
         <Stack gap="3">
-          <img
-            src={alpineSkiing}
-            alt=""
+          <Flex
+            direction="column"
             className={css({
               borderRadius: 'lg',
-              h: 'auto',
+              bg: 'surface.course',
+              color: 'text.on_brand',
               maxW: '20rem',
               w: 'full',
+              p: '3',
             })}
-          />
+          >
+            <p className={css({ textStyle: 'h_large' })}>{copy.courseTitle}</p>
+            <p className={css({ textStyle: 't_small' })}>
+              {copy.courseDetails}
+            </p>
+          </Flex>
           <h1 className={css({ color: 'text.primary', textStyle: 'h_large' })}>
             {copy.heading}
           </h1>
@@ -89,6 +107,8 @@ export function SiteHeader({ onManageAlerts }: SiteHeaderProps) {
               type="button"
               className={iconButtonClass}
               onClick={() => setIsStarFilled((current) => !current)}
+              aria-label={copy.addToFavourites}
+              aria-pressed={isStarFilled}
             >
               <svg
                 aria-hidden="true"
@@ -106,9 +126,12 @@ export function SiteHeader({ onManageAlerts }: SiteHeaderProps) {
             </button>
             <button
               type="button"
-              aria-label="Menu"
+              aria-label={copy.copyLink}
               className={iconButtonClass}
-              onClick={() => setHasCopiedLink(true)}
+              onClick={() => {
+                setHasCopiedLink(false);
+                requestAnimationFrame(() => setHasCopiedLink(true));
+              }}
             >
               <svg
                 aria-hidden="true"
@@ -154,14 +177,17 @@ export function SiteHeader({ onManageAlerts }: SiteHeaderProps) {
               {copy.manageAlerts}
             </button>
           </Flex>
-          {hasCopiedLink && (
-            <p
-              role="status"
-              className={css({ color: 'text.primary', textStyle: 't_small' })}
-            >
-              {copy.linkCopied}
-            </p>
-          )}
+
+          <p
+            role="status"
+            className={css({
+              color: 'text.primary',
+              textStyle: 't_small',
+              minH: '1.375rem',
+            })}
+          >
+            {hasCopiedLink ? copy.linkCopied : ''}
+          </p>
         </Stack>
       </Flex>
     </header>

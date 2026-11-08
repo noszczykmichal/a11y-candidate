@@ -40,37 +40,37 @@ export function App() {
     >
       <Stack gap="6">
         <SiteHeader onManageAlerts={() => setIsAlertsOpen(true)} />
-        {isAlertsOpen && <AlertsModal onClose={handleCloseAlerts} />}
+        <AlertsModal onClose={handleCloseAlerts} open={isAlertsOpen} />
         <ViewSwitcher activeView={activeView} onViewChange={setActiveView} />
-        {activeView === 'schedule' && (
-          <section
-            className={css({
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '4',
-            })}
-          >
-            <SessionFilters
-              activeFilter={activeFilter}
-              onFilterChange={setActiveFilter}
-            />
-            <ScheduleList sessions={visibleSessions} />
-          </section>
-        )}
-        {activeView === 'results' && (
-          <section>
-            <ResultsTable />
-          </section>
-        )}
-        {activeView === 'medals' && (
-          <section>
+        <section
+          id="view-panel"
+          role="tabpanel"
+          aria-labelledby={`tab-${activeView}`}
+          tabIndex={activeView === 'schedule' ? undefined : 0}
+          className={css({
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4',
+          })}
+        >
+          {activeView === 'schedule' && (
+            <>
+              <SessionFilters
+                activeFilter={activeFilter}
+                onFilterChange={setActiveFilter}
+              />
+              <ScheduleList sessions={visibleSessions} />
+            </>
+          )}
+          {activeView === 'results' && <ResultsTable />}
+          {activeView === 'medals' && (
             <p
               className={css({ color: 'text.primary', textStyle: 't_medium' })}
             >
               {copy.medals}
             </p>
-          </section>
-        )}
+          )}
+        </section>
       </Stack>
     </main>
   );

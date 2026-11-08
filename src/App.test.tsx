@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
 import { App } from './App';
+import { copy } from './data/fixtures';
+import axe from 'axe-core';
 
 describe('Championship Day', () => {
   it('renders the page heading', () => {
@@ -16,9 +18,15 @@ describe('Championship Day', () => {
   it('shows every heat on the schedule', () => {
     render(<App />);
 
-    expect(screen.getByText('Heat 1')).toBeInTheDocument();
-    expect(screen.getByText('Heat 2')).toBeInTheDocument();
-    expect(screen.getByText('Heat 3')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Details Heat 1' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Details Heat 2' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Details Heat 3' }),
+    ).toBeInTheDocument();
   });
 
   it('shows finished sessions when Finished is chosen', async () => {
@@ -27,8 +35,12 @@ describe('Championship Day', () => {
 
     await user.click(screen.getByRole('button', { name: 'Finished' }));
 
-    expect(screen.getByText('Heat 2')).toBeInTheDocument();
-    expect(screen.queryByText('Heat 1')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Details Heat 2' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Details Heat 1' }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows an athlete when Results is chosen', async () => {
@@ -55,12 +67,7 @@ describe('Championship Day', () => {
     const user = userEvent.setup();
     render(<App />);
 
-    const [heatOneDetails] = screen.getAllByRole('button', { name: 'Details' });
-    if (heatOneDetails === undefined) {
-      throw new Error('Expected a Details control');
-    }
-
-    await user.click(heatOneDetails);
+    await user.click(screen.getByRole('button', { name: 'Details Heat 1' }));
 
     expect(screen.getByText('First run starts at 10:15.')).toBeInTheDocument();
   });
@@ -69,19 +76,36 @@ describe('Championship Day', () => {
     const user = userEvent.setup();
     render(<App />);
 
+    const dialog = screen.getByRole('dialog', { hidden: true });
+    expect(dialog).not.toHaveAttribute('open');
+
     await user.click(screen.getByRole('button', { name: 'Manage alerts' }));
-    expect(screen.getByText('Heat changes')).toBeInTheDocument();
+    expect(dialog).toHaveAttribute('open');
 
     await user.click(screen.getByRole('button', { name: 'Close' }));
-    expect(screen.queryByText('Heat changes')).not.toBeInTheDocument();
+    expect(dialog).not.toHaveAttribute('open');
   });
 
   it('shows a confirmation when the share control is used', async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole('button', { name: 'Menu' }));
+    await user.click(screen.getByRole('button', { name: copy.copyLink }));
 
     expect(screen.getByText('Link copied')).toBeInTheDocument();
   });
+
+  it.each(['Schedule', 'Results', 'Medals'])(
+    'has no axe violations in the %s view',
+    async (tab) => {
+      const user = userEvent.setup();
+      const { container } = render(<App />);
+      await user.click(screen.getByRole('tab', { name: tab }));
+
+      const results = await axe.run(container, {
+        rules: { 'color-contrast': { enabled: false } },
+      });
+      expect(results.violations).toEqual([]);
+    },
+  );
 });
