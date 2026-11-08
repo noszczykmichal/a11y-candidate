@@ -57,6 +57,10 @@ export const copy = {
   statusMark: '—',
   views: 'Views',
   filterSessions: 'Filter sessions',
+  athlete: 'Athlete',
+  standing: { Qualified: 'Qualified', Eliminated: 'Eliminated' },
+  sortByRank: 'Sort by rank',
+  sortByBib: 'Sort by bib',
 } as const;
 
 export const views: readonly ViewOption[] = [
