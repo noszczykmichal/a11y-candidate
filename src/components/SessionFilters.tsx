@@ -1,7 +1,7 @@
 import { css, cx } from 'styled-system/css';
 import { Flex } from 'styled-system/jsx';
 
-import { type SessionFilterId, sessionFilters } from '../data/fixtures';
+import { copy, type SessionFilterId, sessionFilters } from '../data/fixtures';
 
 export interface SessionFiltersProps {
   activeFilter: SessionFilterId;
@@ -43,22 +43,25 @@ export function SessionFilters({
   onFilterChange,
 }: SessionFiltersProps) {
   return (
-    <Flex direction={{ base: 'column', md: 'row' }} gap="2">
-      {sessionFilters.map((filter, index) => {
+    <Flex
+      role="group"
+      aria-label={copy.filterSessions}
+      direction={{ base: 'column', md: 'row' }}
+      gap="2"
+    >
+      {sessionFilters.map((filter) => {
         const isSelected = filter.id === activeFilter;
 
         return (
-          <div
+          <button
             key={filter.id}
+            type="button"
+            aria-pressed={isSelected}
             className={cx(chipClass, isSelected && selectedChipClass)}
-            {...{
-              role: 'button',
-              tabIndex: index === 0 ? 0 : -1,
-              onClick: () => onFilterChange(filter.id),
-            }}
+            onClick={() => onFilterChange(filter.id)}
           >
             {filter.label}
-          </div>
+          </button>
         );
       })}
     </Flex>

@@ -56,6 +56,7 @@ export const copy = {
   status: 'Status',
   statusMark: '—',
   views: 'Views',
+  filterSessions: 'Filter sessions',
 } as const;
 
 export const views: readonly ViewOption[] = [
