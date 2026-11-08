@@ -1,0 +1,42 @@
+{
+  "name": "championship-day-a11y-exercise",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Championship Day recruitment exercise for WCAG engineering",
+  "scripts": {
+    "panda:codegen": "panda codegen",
+    "panda:css": "panda cssgen --outfile ./.panda/styles.css",
+    "panda:prepare": "pnpm run panda:codegen && pnpm run panda:css",
+    "dev": "pnpm run panda:prepare && vite",
+    "build": "pnpm run panda:prepare && vite build",
+    "preview": "vite preview",
+    "precheck": "pnpm run panda:codegen",
+    "check": "tsc --noEmit",
+    "lint": "biome check src vite.config.ts vitest.config.ts vitest.setup.ts panda.config.ts",
+    "format": "biome format --write src vite.config.ts vitest.config.ts vitest.setup.ts panda.config.ts",
+    "pretest": "pnpm run panda:prepare",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@pandacss/dev": "^1.12.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "@vitest/coverage-v8": "^5.0.5",
+    "axe-core": "4.14.0",
+    "happy-dom": "^21.0.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}

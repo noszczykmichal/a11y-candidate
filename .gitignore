@@ -1,0 +1,8 @@
+.env
+coverage/
+dist/
+.panda/
+node_modules/
+*.tsbuildinfo
+
+.vscode/
