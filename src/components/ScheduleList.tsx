@@ -1,5 +1,5 @@
-import { css } from 'styled-system/css';
 import { useState } from 'react';
+import { css } from 'styled-system/css';
 
 import { copy, type Session } from '../data/fixtures';
 
@@ -46,6 +46,7 @@ export function ScheduleList({ sessions }: ScheduleListProps) {
 
   return (
     <ul
+      role="list"
       className={css({
         display: 'flex',
         flexDirection: 'column',
@@ -95,6 +96,7 @@ export function ScheduleList({ sessions }: ScheduleListProps) {
               onClick={() => handleToggle(session.id)}
             >
               {copy.details}
+              <span className={css({ srOnly: true })}>{session.name}</span>
             </button>
             {isExpanded && (
               <p

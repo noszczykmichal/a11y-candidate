@@ -17,9 +17,15 @@ describe('Championship Day', () => {
   it('shows every heat on the schedule', () => {
     render(<App />);
 
-    expect(screen.getByText('Heat 1')).toBeInTheDocument();
-    expect(screen.getByText('Heat 2')).toBeInTheDocument();
-    expect(screen.getByText('Heat 3')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Details Heat 1' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Details Heat 2' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Details Heat 3' }),
+    ).toBeInTheDocument();
   });
 
   it('shows finished sessions when Finished is chosen', async () => {
@@ -28,8 +34,12 @@ describe('Championship Day', () => {
 
     await user.click(screen.getByRole('button', { name: 'Finished' }));
 
-    expect(screen.getByText('Heat 2')).toBeInTheDocument();
-    expect(screen.queryByText('Heat 1')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Details Heat 2' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Details Heat 1' }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows an athlete when Results is chosen', async () => {
@@ -56,12 +66,7 @@ describe('Championship Day', () => {
     const user = userEvent.setup();
     render(<App />);
 
-    const [heatOneDetails] = screen.getAllByRole('button', { name: 'Details' });
-    if (heatOneDetails === undefined) {
-      throw new Error('Expected a Details control');
-    }
-
-    await user.click(heatOneDetails);
+    await user.click(screen.getByRole('button', { name: 'Details Heat 1' }));
 
     expect(screen.getByText('First run starts at 10:15.')).toBeInTheDocument();
   });
