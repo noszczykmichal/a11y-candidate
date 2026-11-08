@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
 import { App } from './App';
+import { copy } from './data/fixtures';
 
 describe('Championship Day', () => {
   it('renders the page heading', () => {
@@ -80,7 +81,7 @@ describe('Championship Day', () => {
     const user = userEvent.setup();
     render(<App />);
 
-    await user.click(screen.getByRole('button', { name: 'Menu' }));
+    await user.click(screen.getByRole('button', { name: copy.copyLink }));
 
     expect(screen.getByText('Link copied')).toBeInTheDocument();
   });
