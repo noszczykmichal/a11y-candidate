@@ -55,6 +55,7 @@ export const copy = {
   noc: 'NOC',
   status: 'Status',
   statusMark: '—',
+  views: 'Views',
 } as const;
 
 export const views: readonly ViewOption[] = [
