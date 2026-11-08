@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import { App } from './App';
 import { copy } from './data/fixtures';
+import axe from 'axe-core';
 
 describe('Championship Day', () => {
   it('renders the page heading', () => {
@@ -93,4 +94,18 @@ describe('Championship Day', () => {
 
     expect(screen.getByText('Link copied')).toBeInTheDocument();
   });
+
+  it.each(['Schedule', 'Results', 'Medals'])(
+    'has no axe violations in the %s view',
+    async (tab) => {
+      const user = userEvent.setup();
+      const { container } = render(<App />);
+      await user.click(screen.getByRole('tab', { name: tab }));
+
+      const results = await axe.run(container, {
+        rules: { 'color-contrast': { enabled: false } },
+      });
+      expect(results.violations).toEqual([]);
+    },
+  );
 });
