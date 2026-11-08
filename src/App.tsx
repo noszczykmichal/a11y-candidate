@@ -40,7 +40,7 @@ export function App() {
     >
       <Stack gap="6">
         <SiteHeader onManageAlerts={() => setIsAlertsOpen(true)} />
-        {isAlertsOpen && <AlertsModal onClose={handleCloseAlerts} />}
+        <AlertsModal onClose={handleCloseAlerts} open={isAlertsOpen} />
         <ViewSwitcher activeView={activeView} onViewChange={setActiveView} />
         {activeView === 'schedule' && (
           <section

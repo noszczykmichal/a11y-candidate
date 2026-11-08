@@ -70,11 +70,14 @@ describe('Championship Day', () => {
     const user = userEvent.setup();
     render(<App />);
 
+    const dialog = screen.getByRole('dialog', { hidden: true });
+    expect(dialog).not.toHaveAttribute('open');
+
     await user.click(screen.getByRole('button', { name: 'Manage alerts' }));
-    expect(screen.getByText('Heat changes')).toBeInTheDocument();
+    expect(dialog).toHaveAttribute('open');
 
     await user.click(screen.getByRole('button', { name: 'Close' }));
-    expect(screen.queryByText('Heat changes')).not.toBeInTheDocument();
+    expect(dialog).not.toHaveAttribute('open');
   });
 
   it('shows a confirmation when the share control is used', async () => {
